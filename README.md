@@ -1,2 +1,2 @@
-# BluetoothRgbControl
+# Android App for Home DIY projects
 Work in progress...
