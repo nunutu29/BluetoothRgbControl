@@ -3,14 +3,26 @@ package com.example.homediy;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 
-public class MainActivity extends AppCompatActivity {
+import com.example.homediy.Fragments.DeviceListFragment;
+import com.example.homediy.Fragments.IComunicateFragment;
+import com.example.homediy.Models.Device;
 
+public class MainActivity extends AppCompatActivity
+        implements DeviceListFragment.OnDeviceListFragmentInteractionListener
+{
+
+    private static DeviceListFragment DefaultFragmnet = new DeviceListFragment();
+    private FrameLayout RootElement;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,14 +30,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        RootElement = findViewById(R.id.frame_container);
+
+        setFragment(DefaultFragmnet);
     }
 
     @Override
@@ -49,4 +56,16 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    protected void setFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(RootElement.getId(), fragment);
+        fragmentTransaction.commit();
+    }
+
+    public void onDeviceListFragmentInteraction(Device device){
+
+    }
+
 }
