@@ -31,8 +31,8 @@ public class MyDeviceRecyclerViewAdapter extends RecyclerView.Adapter<MyDeviceRe
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(holder.mItem.Name);
-        holder.mContentView.setText(holder.mItem.Details);
+        holder.mNameView.setText(holder.mItem.Name);
+        holder.mDetailView.setText(holder.mItem.Details);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,20 +53,20 @@ public class MyDeviceRecyclerViewAdapter extends RecyclerView.Adapter<MyDeviceRe
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
+        public final TextView mNameView;
+        public final TextView mDetailView;
         public Device mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = view.findViewById(R.id.item_number);
-            mContentView = view.findViewById(R.id.content);
+            mNameView = view.findViewById(R.id.name);
+            mDetailView = view.findViewById(R.id.details);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + mDetailView.getText() + "'";
         }
     }
 }
