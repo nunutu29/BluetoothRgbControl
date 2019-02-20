@@ -1,28 +1,29 @@
 package com.example.homediy;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.example.homediy.Fragments.DeviceListFragment;
-import com.example.homediy.Fragments.IComunicateFragment;
+import com.example.homediy.Fragments.AddDeviceListFragment;
 import com.example.homediy.Models.Device;
 
-public class MainActivity extends AppCompatActivity
-        implements DeviceListFragment.OnDeviceListFragmentInteractionListener
-{
+import java.util.ArrayList;
 
-    private static DeviceListFragment DefaultFragmnet = new DeviceListFragment();
+public class MainActivity extends AppCompatActivity
+        implements
+        DeviceListFragment.OnDeviceListFragmentInteraction,
+        AddDeviceListFragment.OnDeviceListFragmentInteraction
+{
+    private static DeviceListFragment DefaultFragment = DeviceListFragment.Instance(true);
     private FrameLayout RootElement;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity
 
         RootElement = findViewById(R.id.frame_container);
 
-        setFragment(DefaultFragmnet);
+        setFragment(DefaultFragment);
     }
 
     @Override
@@ -64,8 +65,19 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
-    public void onDeviceListFragmentInteraction(Device device){
+    public void onListFragmentInteraction(String Tag, Device device){
+        //TODO identificare in qualche modo quale fragment ha chiamato questa callback
+        // cambiare nome metodo ?
+        // aggiungere un altro input ?
+        // aggiungere un tipo di ritorno ?
+    }
 
+    public ArrayList<Device> onNeedList(){
+        return new ArrayList<Device>();
+    }
+
+    public void onAddDeviceClick(){
+        setFragment(new AddDeviceListFragment());
     }
 
 }

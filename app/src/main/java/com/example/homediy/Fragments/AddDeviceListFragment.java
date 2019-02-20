@@ -3,13 +3,14 @@ package com.example.homediy.Fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.homediy.Fragments.Adapters.MyDeviceRecyclerViewAdapter;
 import com.example.homediy.Fragments.Interfaces.ListFragmentInteraction;
@@ -18,19 +19,12 @@ import com.example.homediy.R;
 
 import java.util.ArrayList;
 
-public class DeviceListFragment extends Fragment {
+public class AddDeviceListFragment extends Fragment {
 
     private OnDeviceListFragmentInteraction fragmentInteraction;
-    private boolean VisibleAddDevice;
 
-    public DeviceListFragment() {
+    public AddDeviceListFragment() {
 
-    }
-
-    public static DeviceListFragment Instance(boolean visibleAddDevice) {
-        DeviceListFragment fragment = new DeviceListFragment();
-        fragment.VisibleAddDevice = visibleAddDevice;
-        return fragment;
     }
 
     @Override
@@ -42,24 +36,14 @@ public class DeviceListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_device_list, container, false);
 
-        if(VisibleAddDevice){
-            FloatingActionButton fab = view.findViewById(R.id.addDevice);
-            fab.setVisibility(View.VISIBLE);
-
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    fragmentInteraction.onAddDeviceClick();
-                }
-            });
-        }
+        Toast.makeText(getContext(), "Created", Toast.LENGTH_LONG).show();
 
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(new MyDeviceRecyclerViewAdapter("Y", fragmentInteraction));
+            recyclerView.setAdapter(new MyDeviceRecyclerViewAdapter("x", fragmentInteraction));
         }
         return view;
     }
@@ -84,6 +68,5 @@ public class DeviceListFragment extends Fragment {
     {
         void onListFragmentInteraction(String Tag, Device device);
         ArrayList<Device> onNeedList();
-        void onAddDeviceClick();
     }
 }

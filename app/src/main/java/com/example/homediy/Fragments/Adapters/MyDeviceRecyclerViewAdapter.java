@@ -1,63 +1,64 @@
 package com.example.homediy.Fragments.Adapters;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.homediy.Fragments.DeviceListFragment.OnDeviceListFragmentInteractionListener;
+import com.example.homediy.Fragments.Interfaces.ListFragmentInteraction;
 import com.example.homediy.Models.Device;
 import com.example.homediy.R;
 
-import java.util.List;
+import java.util.ArrayList;
 
-public class MyDeviceRecyclerViewAdapter extends RecyclerView.Adapter<MyDeviceRecyclerViewAdapter.ViewHolder> {
+public class MyDeviceRecyclerViewAdapter
+        extends RecyclerView.Adapter<MyDeviceRecyclerViewAdapter.ViewHolder>
+{
+    private final ArrayList<Device> Devices;
+    private final ListFragmentInteraction<Device> FragmentInteraction;
+    private final String Tag;
 
-    private final List<Device> mValues;
-    private final OnDeviceListFragmentInteractionListener mListener;
-
-    public MyDeviceRecyclerViewAdapter(List<Device> items, OnDeviceListFragmentInteractionListener listener) {
-        mValues = items;
-        mListener = listener;
+    public MyDeviceRecyclerViewAdapter(String tag, @NonNull ListFragmentInteraction<Device> fragmentInteraction ) {
+        FragmentInteraction = fragmentInteraction;
+        Tag = tag;
+        Devices = FragmentInteraction.onNeedList();
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    @NonNull
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_device, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mNameView.setText(holder.mItem.Name);
-        holder.mDetailView.setText(holder.mItem.Details);
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+        holder.device = Devices.get(position);
+        holder.mNameView.setText(holder.device.Name);
+        holder.mDetailView.setText(holder.device.Details);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onDeviceListFragmentInteraction(holder.mItem);
-                }
+            public void onClick(View view) {
+                FragmentInteraction.onListFragmentInteraction(Tag, holder.device);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return Devices.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView mNameView;
-        public final TextView mDetailView;
-        public Device mItem;
+        Device device;
+        final View mView;
+        final TextView mNameView;
+        final TextView mDetailView;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
             mView = view;
             mNameView = view.findViewById(R.id.name);
@@ -66,7 +67,7 @@ public class MyDeviceRecyclerViewAdapter extends RecyclerView.Adapter<MyDeviceRe
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mDetailView.getText() + "'";
+            return super.toString() + " '" + mNameView.getText() + "'";
         }
     }
 }
