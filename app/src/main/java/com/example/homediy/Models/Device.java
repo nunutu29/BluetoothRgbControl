@@ -1,5 +1,7 @@
 package com.example.homediy.Models;
 
+import java.util.Locale;
+
 public class Device {
     public int Id;
     public String Name;
@@ -15,6 +17,6 @@ public class Device {
 
     @Override
     public String toString() {
-        return String.format("%s (%s)", Name, Details);
+        return String.format(Locale.getDefault(), "%d-%s(%s)", Id, Name, Details);
     }
 }

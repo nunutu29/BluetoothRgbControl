@@ -7,16 +7,15 @@
     android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/list"
+        android:id="@+id/recyclerViewMyDeviceList"
         android:name="com.example.homediy.Fragments.DeviceFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="LinearLayoutManager"
-        tools:context=".Fragments.DeviceListFragment"
-        tools:listitem="@layout/fragment_device" />
+        tools:context=".Fragments.MyDeviceListFragment"
+        tools:listitem="@layout/device_item" />
 
     <android.support.design.widget.FloatingActionButton
-        android:visibility="gone"
         android:id="@+id/addDevice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
