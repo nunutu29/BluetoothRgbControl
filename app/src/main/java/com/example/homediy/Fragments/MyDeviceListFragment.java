@@ -21,7 +21,6 @@ import java.util.ArrayList;
 
 public class MyDeviceListFragment extends Fragment implements IFragmentWithName
 {
-
     private OnMyDeviceListFragmentInteraction FragmentInteraction;
 
     public String getName()

@@ -17,10 +17,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:alphaSlider="false"
-            app:density="10"
+            app:density="8"
             app:lightnessSlider="true"
             app:lightnessSliderView="@+id/v_lightness_slider"
-            app:wheelType="FLOWER"
+            app:wheelType="CIRCLE"
+
             android:layout_marginBottom="@dimen/default_padding_side"/>
 
         <com.flask.colorpicker.slider.LightnessSlider
