@@ -28,7 +28,7 @@ public class BluetoothListFragment extends Fragment implements IFragmentWithName
 
     public String getName()
     {
-        return "BluetoothListFragment";
+        return BluetoothListFragment.class.getSimpleName();
     }
 
     @Override

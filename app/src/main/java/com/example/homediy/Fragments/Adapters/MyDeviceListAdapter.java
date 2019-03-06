@@ -14,13 +14,19 @@ import java.util.ArrayList;
 
 public class MyDeviceListAdapter extends RecyclerView.Adapter<DeviceHolder>
 {
-    private final ArrayList<Device> Devices;
+    private ArrayList<Device> Devices;
     private final OnMyDeviceListFragmentInteraction FragmentInteraction;
 
     public MyDeviceListAdapter(@NonNull OnMyDeviceListFragmentInteraction fragmentInteraction)
     {
         FragmentInteraction = fragmentInteraction;
         Devices = FragmentInteraction.getMyDeviceList();
+    }
+
+    public void Rebind()
+    {
+        Devices = FragmentInteraction.getMyDeviceList();
+        notifyDataSetChanged();
     }
 
     @Override
@@ -41,6 +47,16 @@ public class MyDeviceListAdapter extends RecyclerView.Adapter<DeviceHolder>
             @Override
             public void onClick(View view) {
                 FragmentInteraction.onMyDeviceInteraction(holder.device);
+            }
+        });
+
+        holder.mView.setOnLongClickListener(new View.OnLongClickListener()
+        {
+            @Override
+            public boolean onLongClick(View view)
+            {
+                FragmentInteraction.onMyDeviceLongInteraction(holder.device);
+                return false;
             }
         });
     }

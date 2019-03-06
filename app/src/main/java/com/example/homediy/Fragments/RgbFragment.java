@@ -5,14 +5,18 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.homediy.BluetoothThread;
 import com.example.homediy.Fragments.Interfaces.IFragmentWithName;
 import com.example.homediy.Models.Device;
 import com.example.homediy.Models.Rgb;
@@ -33,95 +37,27 @@ public class RgbFragment extends Fragment implements IFragmentWithName
     private Device mDevice;
 
     private OnRgbFragmentInteraction mFragmentInteraction;
-    private BluetoothDevice mBluetoothDevice;
-    private BluetoothSocket mBluetoothSocket;
-    private OutputStream mOutputStream;
-    private InputStream mInputStream;
+
+    private BluetoothThread mBluetoothThread;
 
     public String getName()
     {
-        return "RgbFragment";
+        return RgbFragment.class.getSimpleName();
     }
 
-    private static final String OnMessage()
+    private static String OnMessage()
     {
         return "X";
     }
 
-    private static final String OffMessage()
+    private static String OffMessage()
     {
         return "Y";
     }
 
-    private static final String RgbMessage(Rgb rgb)
+    private static String RgbMessage(Rgb rgb)
     {
         return rgb.Format("Z {R},{G},{B};");
-    }
-
-    public BluetoothDevice getBluetoothDevice()
-    {
-        if(mBluetoothDevice != null)
-            return mBluetoothDevice;
-
-        if (mFragmentInteraction.getBluetoothAdapter() == null)
-            return null;
-
-        Set<BluetoothDevice> pairedDevices = mFragmentInteraction.getBluetoothAdapter().getBondedDevices();
-        for(BluetoothDevice bluetoothDevice : pairedDevices)
-        {
-            if(bluetoothDevice.getAddress().equals(mDevice.Key))
-            {
-                mBluetoothDevice = bluetoothDevice;
-                return mBluetoothDevice;
-            }
-        }
-
-        Toast.makeText(getContext(), String.format("Could not find %s", mDevice.Name), Toast.LENGTH_LONG).show();
-        return null;
-    }
-
-    public void BluetoothConnect()
-    {
-        if(getBluetoothDevice() == null)
-            return;
-
-        if(mBluetoothSocket != null && mBluetoothSocket.isConnected())
-            return;
-
-        try
-        {
-            mBluetoothSocket = getBluetoothDevice().createInsecureRfcommSocketToServiceRecord(PORT_UUID);
-            mBluetoothSocket.connect();
-
-            mOutputStream = mBluetoothSocket.getOutputStream();
-            mInputStream = mBluetoothSocket.getInputStream();
-
-        }
-        catch(Exception ex)
-        {
-            ex.printStackTrace();
-        }
-    }
-
-    public void BluetoothDisconnect()
-    {
-        try
-        {
-            mBluetoothDevice = null;
-
-            mBluetoothSocket.close();
-            mBluetoothSocket = null;
-
-            mOutputStream.close();
-            mInputStream.close();
-
-            mOutputStream = null;
-            mInputStream = null;
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
     }
 
     public static RgbFragment newInstance(Device device)
@@ -161,11 +97,35 @@ public class RgbFragment extends Fragment implements IFragmentWithName
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_rgb, container, false);
+        final View view = inflater.inflate(R.layout.fragment_rgb, container, false);
 
         if(view instanceof FrameLayout)
         {
             ColorPickerView colorPickerView = view.findViewById(R.id.color_picker_view);
+
+            if(mDevice != null)
+            {
+                mBluetoothThread = new BluetoothThread(mDevice,
+                    new Handler(){
+                        @Override
+                        public void handleMessage(Message message) {
+                            String msg = (String) message.obj;
+                            //Logger
+                            TextView textView = view.findViewById(R.id.rgbStatus);
+                            textView.setText(msg);
+                        }
+                    },
+                    new Handler() {
+                        @Override
+                        public void handleMessage(Message message) {
+                            String msg = (String) message.obj;
+
+                        }
+                });
+            }
+
+            mBluetoothThread.start();
+
             colorPickerView.addOnColorChangedListener(new OnColorChangedListener()
             {
                 @Override
@@ -175,7 +135,10 @@ public class RgbFragment extends Fragment implements IFragmentWithName
                 String rgbMessage = RgbMessage(new Rgb(intColor));
                 try
                 {
-                    mOutputStream.write(rgbMessage.getBytes());
+                    Message mess = new Message();
+                    mess.obj = rgbMessage;
+
+                    mBluetoothThread.getWriteHandler().handleMessage(mess);
                 }
                 catch (Exception ex)
                 {
@@ -192,15 +155,17 @@ public class RgbFragment extends Fragment implements IFragmentWithName
     @Override
     public void onResume()
     {
-        BluetoothConnect();
+        //BluetoothConnect();
         super.onResume();
     }
 
     @Override
-    public void onDetach() {
+    public void onDetach()
+    {
         super.onDetach();
         mFragmentInteraction = null;
-        BluetoothDisconnect();
+
+        //BluetoothDisconnect();
     }
 
     public interface OnRgbFragmentInteraction

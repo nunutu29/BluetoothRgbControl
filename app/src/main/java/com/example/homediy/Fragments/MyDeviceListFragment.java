@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.example.homediy.Fragments.Adapters.MyDeviceListAdapter;
 import com.example.homediy.Fragments.Interfaces.IFragmentWithName;
+import com.example.homediy.MainActivity;
 import com.example.homediy.Models.Device;
 import com.example.homediy.R;
 
@@ -21,11 +22,13 @@ import java.util.ArrayList;
 
 public class MyDeviceListFragment extends Fragment implements IFragmentWithName
 {
-    private OnMyDeviceListFragmentInteraction FragmentInteraction;
+    private OnMyDeviceListFragmentInteraction mFragmentInteraction;
+    private MyDeviceListAdapter myDeviceListAdapter;
+
 
     public String getName()
     {
-        return "MyDeviceListFragment";
+        return MyDeviceListFragment.class.getSimpleName();
     }
 
     @Override
@@ -44,16 +47,28 @@ public class MyDeviceListFragment extends Fragment implements IFragmentWithName
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentInteraction.onAddMyDeviceClick();
+                mFragmentInteraction.onAddMyDeviceClick();
             }
         });
+
+        ((MainActivity)getActivity()).setFragmentRefreshListener(new MainActivity.FragmentRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                myDeviceListAdapter.Rebind();
+            }
+        });
+
 
         if (view instanceof CoordinatorLayout)
         {
             Context context = view.getContext();
             RecyclerView recyclerView = view.findViewById(R.id.recyclerViewMyDeviceList);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(new MyDeviceListAdapter(FragmentInteraction));
+
+            myDeviceListAdapter = new MyDeviceListAdapter(mFragmentInteraction);
+
+            recyclerView.setAdapter(myDeviceListAdapter);
         }
 
         return view;
@@ -63,7 +78,7 @@ public class MyDeviceListFragment extends Fragment implements IFragmentWithName
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnMyDeviceListFragmentInteraction) {
-            FragmentInteraction = (OnMyDeviceListFragmentInteraction) context;
+            mFragmentInteraction = (OnMyDeviceListFragmentInteraction) context;
         } else {
             throw new RuntimeException(context.toString() + " must implement OnMyDeviceListFragmentInteraction");
         }
@@ -72,12 +87,13 @@ public class MyDeviceListFragment extends Fragment implements IFragmentWithName
     @Override
     public void onDetach() {
         super.onDetach();
-        FragmentInteraction = null;
+        mFragmentInteraction = null;
     }
 
     public interface OnMyDeviceListFragmentInteraction
     {
         void onMyDeviceInteraction(Device device);
+        void onMyDeviceLongInteraction(Device device);
         ArrayList<Device> getMyDeviceList();
         void onAddMyDeviceClick();
     }
