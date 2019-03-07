@@ -22,6 +22,7 @@ import com.example.homediy.Fragments.RgbFragment;
 import com.example.homediy.Models.Device;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity
         implements
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity
     private IFragmentWithName CurrentFragment;
     private FrameLayout RootElement;
     private BluetoothAdapter mBluetoothAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,11 +72,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDestroy()
     {
-        if(mBluetoothAdapter != null)
-        {
-            mBluetoothAdapter.disable();
-            mBluetoothAdapter = null;
-        }
+        mBluetoothAdapter = null;
         super.onDestroy();
     }
 
@@ -124,9 +122,9 @@ public class MainActivity extends AppCompatActivity
                     case DialogInterface.BUTTON_POSITIVE:
                         MyApplication.getInstance().getPrefManager().deleteDevice(device);
 
-                        if(getFragmentRefreshListener() != null)
+                        if(getFragmentListener() != null)
                         {
-                            getFragmentRefreshListener().onRefresh();
+                            getFragmentListener().Refresh();
                         }
                         break;
 
@@ -182,23 +180,21 @@ public class MainActivity extends AppCompatActivity
         return mBluetoothAdapter;
     }
 
+    private FragmentListener fragmentListener;
 
-
-    private FragmentRefreshListener fragmentRefreshListener;
-
-    public FragmentRefreshListener getFragmentRefreshListener()
+    public FragmentListener getFragmentListener()
     {
-        return fragmentRefreshListener;
+        return fragmentListener;
     }
 
-    public void setFragmentRefreshListener(FragmentRefreshListener fragmentRefreshListener)
+    public void setFragmentListener(FragmentListener fragmentListener)
     {
-        this.fragmentRefreshListener = fragmentRefreshListener;
+        this.fragmentListener = fragmentListener;
     }
 
+    public interface FragmentListener
+    {
+        void Refresh();
 
-
-    public interface FragmentRefreshListener{
-        void onRefresh();
     }
 }

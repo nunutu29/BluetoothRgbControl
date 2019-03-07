@@ -51,13 +51,16 @@ public class MyDeviceListFragment extends Fragment implements IFragmentWithName
             }
         });
 
-        ((MainActivity)getActivity()).setFragmentRefreshListener(new MainActivity.FragmentRefreshListener() {
-            @Override
-            public void onRefresh() {
+        if(getActivity() != null)
+        {
+            ((MainActivity)getActivity()).setFragmentListener(new MainActivity.FragmentListener() {
+                @Override
+                public void Refresh() {
 
-                myDeviceListAdapter.Rebind();
-            }
-        });
+                    myDeviceListAdapter.Rebind();
+                }
+            });
+        }
 
 
         if (view instanceof CoordinatorLayout)
